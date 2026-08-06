@@ -2,7 +2,7 @@
 
 ### Hi, I'm a Senior Software Engineer building hands-on GenAI expertise on a 17-year Java/Spring Boot foundation
 
-I spent most of my career building traditional enterprise software. These four repos are where I taught myself GenAI engineering from scratch — deliberately covering different techniques (RAG, protocol integration, structured extraction, cross-language ML) rather than one deep pattern repeated four times, with the debugging stories left in, not smoothed over.
+I spent most of my career building traditional enterprise software. These five repos are where I taught myself GenAI engineering from scratch — deliberately covering different techniques (RAG, protocol integration, structured extraction, cross-language ML, cross-document synthesis) rather than one deep pattern repeated five times, with the debugging stories left in, not smoothed over.
 
 ---
 
@@ -47,9 +47,20 @@ The ML half of the loan project: trains and serves a logistic regression default
 
 ---
 
+### 👥 [ai-attrition-insight](https://github.com/chgiri/ai-attrition-insight)
+**Cross-Document Synthesis · Structured Extraction · Independent Validation**
+
+An HR-domain tool that synthesizes recurring themes across an employee's unstructured feedback — 1:1 notes, engagement surveys, peer feedback — surfacing patterns no keyword search or dashboard could find, since the same concern is expressed in completely different words by different people at different times. Deliberately scoped around a problem that requires genuine language understanding, not a database query with an AI label on it. Pure Java/Spring AI, no companion service — a different kind of GenAI problem than the other four.
+
+- The core proof: three feedback entries with *zero shared vocabulary* correctly recognized as the same recurring theme — and, just as important, a genuinely unrelated case correctly recognized as no pattern at all
+- A built-in, non-circular validation mechanism: a departed employee's exit interview is never used as input signal, only to independently check afterward whether a pre-departure pattern prediction actually matched their real stated reason for leaving
+- An explicit, hard-coded safety rule preventing the model from ever predicting departure — it reports a pattern in language, never a verdict on a person — paired with an upfront README section on why this must never be deployed as covert surveillance
+
+---
+
 ### How These Fit Together
 
-Two independent problems, each split into a "core service" and a "why it's separate" companion, for two different concrete reasons:
+Two paired problems, each split into a "core service" and a "why it's separate" companion for a stated architectural reason — plus one standalone project proving the underlying techniques transfer to a different domain entirely, without forcing an unnecessary split just for symmetry:
 
 ```
 banking-ai-agent      ──(REST)──►  banking-mcp-server
@@ -57,10 +68,11 @@ banking-ai-agent      ──(REST)──►  banking-mcp-server
 
 ai-loan-underwriting   ──(gRPC)──►  loan-underwriting-ml
   (extraction, rules, explanation)      (cross-language ML service)
+
+ai-attrition-insight
+  (cross-document synthesis, standalone — no companion needed)
 ```
 
-Every split was made for a stated architectural reason, not by default — documented explicitly in each repo's own README.
+Every split (and every non-split) was a deliberate choice, not a default — documented explicitly in each repo's own README.
 
 ---
-
-
