@@ -2,7 +2,7 @@
 
 ### Hi, I'm a Senior Software Engineer building hands-on GenAI expertise on a 17-year Java/Spring Boot foundation
 
-I spent most of my career building traditional enterprise software. These five repos are where I taught myself GenAI engineering from scratch — deliberately covering different techniques (RAG, protocol integration, structured extraction, cross-language ML, cross-document synthesis) rather than one deep pattern repeated five times, with the debugging stories left in, not smoothed over.
+I spent most of my career building traditional enterprise software. These six repos are where I taught myself GenAI engineering from scratch — deliberately covering different techniques (RAG, protocol integration, structured extraction, cross-language ML, cross-document synthesis, graph-based multi-hop detection) rather than one deep pattern repeated six times, with the debugging stories left in, not smoothed over.
 
 ---
 
@@ -58,9 +58,20 @@ An HR-domain tool that synthesizes recurring themes across an employee's unstruc
 
 ---
 
+### 🕸️ [ai-fraud-ring-detector](https://github.com/chgiri/ai-fraud-ring-detector)
+**Graph Database · Multi-Hop Traversal · Neo4j**
+
+A fraud detection tool that finds accounts connected through shared attributes — phone numbers, addresses, beneficiaries — even across applications that never reference each other directly. Built specifically to justify a NoSQL choice architecturally, not by convenience: this is the one problem in the portfolio where the *query itself* (multi-hop relationship traversal) requires a graph database, not just where a graph database happens to be usable. First project here without a vector store or embeddings at all — detection happens entirely through graph structure.
+
+- The core proof: two applications with zero direct connection to each other, correctly found to be linked two hops apart, purely through a shared intermediate account — something no keyword search, SQL join, or similarity search could surface
+- Severity is derived deterministically from the graph data in code, never left to the model's judgment — same "code decides, LLM explains" discipline as every other project, applied to a graph instead of a rules engine
+- A real, honestly-documented bug: a Cypher query counted raw graph edges instead of logical account-to-account hops, which silently prevented the severity signal from ever elevating correctly — caught by testing the *meaning* of output, not just that a response came back successfully
+
+---
+
 ### How These Fit Together
 
-Two paired problems, each split into a "core service" and a "why it's separate" companion for a stated architectural reason — plus one standalone project proving the underlying techniques transfer to a different domain entirely, without forcing an unnecessary split just for symmetry:
+Two paired problems, each split into a "core service" and a "why it's separate" companion for a stated architectural reason — plus two standalone projects proving the underlying techniques transfer to different domains and data models entirely, without forcing an unnecessary split just for symmetry:
 
 ```
 banking-ai-agent      ──(REST)──►  banking-mcp-server
@@ -69,8 +80,10 @@ banking-ai-agent      ──(REST)──►  banking-mcp-server
 ai-loan-underwriting   ──(gRPC)──►  loan-underwriting-ml
   (extraction, rules, explanation)      (cross-language ML service)
 
-ai-attrition-insight
-  (cross-document synthesis, standalone — no companion needed)
+ai-attrition-insight              ai-fraud-ring-detector
+  (cross-document synthesis,        (graph traversal, Neo4j —
+   standalone — no companion         standalone, no companion
+   needed)                           needed)
 ```
 
 Every split (and every non-split) was a deliberate choice, not a default — documented explicitly in each repo's own README.
